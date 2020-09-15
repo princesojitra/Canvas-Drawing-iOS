@@ -17,7 +17,7 @@ class Canvas: UIView {
     fileprivate var isShapeDrwan: Bool = false
     fileprivate var imageAnimationXPoint : CGFloat = 0.0
     fileprivate var imageAnimationYPoint : CGFloat = 0.0
-    fileprivate var imgVwAnimation : UIImageView = UIImageView()
+    fileprivate var imgVwAnimation : UIImageView?
     fileprivate var totalPointsPath : Int = 0
     fileprivate var path = UIBezierPath()
     
@@ -59,22 +59,34 @@ class Canvas: UIView {
             
             
             print("total points",self.totalPointsPath)
+            
+            
             CATransaction.begin()
             CATransaction.setCompletionBlock {
-                self.imgVwAnimation.removeFromSuperview()
+                if self.imgVwAnimation != nil {
+                    self.imgVwAnimation!.frame = CGRect(x: self.imageAnimationXPoint - 10, y: self.imageAnimationYPoint - 20, width: 35, height: 35)
+                    //                print(self.imgVwAnimation)
+                }
             }
             
-            self.imgVwAnimation = UIImageView(frame: CGRect(x: self.imageAnimationXPoint, y: self.imageAnimationYPoint, width: 35, height: 35))
-            imgVwAnimation.contentMode = .scaleAspectFit
-            imgVwAnimation.image = UIImage(named: "car")
-            //        imgVwAnimation.backgroundColor = UIColor.red
-            let orbit = CAKeyframeAnimation(keyPath: "position")
-            orbit.path = path.cgPath
-            orbit.duration = 15
-            orbit.repeatCount = .zero
-            orbit.rotationMode = CAAnimationRotationMode.rotateAuto
-            self.addSubview(imgVwAnimation)
-            imgVwAnimation.layer.add(orbit, forKey: "orbit")
+            
+            if self.imgVwAnimation == nil {
+                
+                self.imgVwAnimation = UIImageView(frame: CGRect(x: self.imageAnimationXPoint, y: self.imageAnimationYPoint, width: 35, height: 35))
+                
+                
+            }
+            
+            imgVwAnimation!.contentMode = .scaleAspectFit
+            imgVwAnimation!.image = UIImage(named: "car")
+            //            imgVwAnimation!.backgroundColor = UIColor.red
+            let robotAnimation = CAKeyframeAnimation(keyPath: "position")
+            robotAnimation.path = path.cgPath
+            robotAnimation.duration = 15
+            robotAnimation.repeatCount = .zero
+            robotAnimation.rotationMode = CAAnimationRotationMode.rotateAuto
+            self.addSubview(imgVwAnimation!)
+            imgVwAnimation!.layer.add(robotAnimation, forKey: "robot")
             CATransaction.commit()
         }
     }
@@ -82,7 +94,9 @@ class Canvas: UIView {
     func clear() {
         lines.removeAll()
         self.isShapeDrwan = false
-        self.imgVwAnimation.removeFromSuperview()
+        if self.imgVwAnimation != nil {
+            self.imgVwAnimation!.removeFromSuperview()
+        }
         setNeedsDisplay()
     }
     
